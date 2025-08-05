@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/Saravana-Pandian-1506/Springboot-Project.git'
+                git 'https://github.com/Saravana-Pandian-1506/Springboot-Project.git', branch: 'main'
             }
         }
 
