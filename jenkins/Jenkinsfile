@@ -1,12 +1,17 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'maven'   // Make sure "maven" is defined under Global Tool Config
+        jdk 'jdk11'     // Likewise for JDK
+    }
+
     environment {
-        DOCKER_IMAGE = 'saravanapandian1506/Springboot-Project'
+        IMAGE_NAME = "springboot-app"
     }
 
     stages {
-        stage('Clone') {
+        stage('Clone Repository') {
             steps {
                 git url: 'https://github.com/Saravana-Pandian-1506/Springboot-Project.git', branch: 'main'
             }
@@ -14,24 +19,23 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                sh 'mvn clean package'
+                dir('.') { // This ensures we're in the correct working directory
+                    sh 'mvn clean package'
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE .'
+                dir('.') {
+                    sh 'docker build -t $IMAGE_NAME .'
+                }
             }
         }
 
-        stage('Push to DockerHub') {
+        stage('Run Docker Container') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh '''
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push $DOCKER_IMAGE
-                    '''
-                }
+                sh 'docker run -d -p 8080:8080 $IMAGE_NAME'
             }
         }
     }
