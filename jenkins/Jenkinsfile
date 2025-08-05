@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'yourdockerhubusername/your-app-name'
+        DOCKER_IMAGE = 'saravanapandian1506/Springboot-Project'
     }
 
     stages {
         stage('Clone') {
             steps {
-                git 'https://github.com/<your-username>/<repo-name>.git'
+                git 'https://github.com/Saravana-Pandian-1506/Springboot-Project.git'
             }
         }
 
